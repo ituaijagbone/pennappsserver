@@ -7,7 +7,7 @@ var mongodb = require('mongodb');
 var ObjectID = require('mongodb').ObjectID
 var MongoClient = mongodb.MongoClient;
 
-var url = 'mongodb://localhost:27017/pennappsdb2';
+var url = 'mongodb://localhost:27017/pennappsdb4';
 
 var done=false;
 
