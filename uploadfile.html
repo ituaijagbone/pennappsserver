@@ -71,9 +71,13 @@
           <section class="section--center mdl-grid mdl-grid--no-spacing">
             <div class="mdl-card mdl-cell mdl-cell--9-col-desktop mdl-cell--6-col-tablet mdl-cell--4-col-phone">
               <form action="/upload" , method="post", enctype="multipart/form-data">
+
                 <div class="mdl-card__supporting-text">
                   <h4>Upload Presentation</h4>
-
+                  <div class="mdl-textfield mdl-js-textfield">
+                    <input class="mdl-textfield__input" type="text" id="sample1" name="presentationTitle"/>
+                    <label class="mdl-textfield__label" for="sample1">presentation title</label>
+                  </div>
                     <div class="mdl-textfield mdl-js-textfield">
                       <input class="mdl-textfield__input" type="file" name="slides" id="sample1" multiple/>
 
