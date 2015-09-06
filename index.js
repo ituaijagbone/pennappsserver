@@ -7,7 +7,7 @@ var mongodb = require('mongodb');
 var ObjectID = require('mongodb').ObjectID
 var MongoClient = mongodb.MongoClient;
 
-var url = 'mongodb://localhost:27017/pennappsdb4';
+var url = 'mongodb://localhost:27017/pennappsdb5';
 
 var done=false;
 
@@ -226,6 +226,10 @@ app.get('/slides', function(req, res, next) {
 io.on('connection', function(socket){
   socket.on('sendList', function() {
     io.emit('sendList', {'slides': slides})
+  });
+
+  socket.on('changeBack', function(data) {
+    io.emit('changeWelcome', {'data': data})
   });
 
   socket.on('changeIndex', function(data) {
