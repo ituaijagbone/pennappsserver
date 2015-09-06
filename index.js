@@ -15,7 +15,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('changeIndex', function(data) {
-    io.emit('changeIndex', {'slideIndex': data})
+    io.emit('changeSlide', {'slideIndex': data})
   });
 
   socket.on('changePresentation', function(data) {
