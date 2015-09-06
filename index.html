@@ -86,10 +86,12 @@
 
       var socket = io();
 
-      socket.emit('sendList');
+      // socket.emit('sendList');
 
       socket.on('sendList', function(data) {
+        console.log(slides);
         slides = data["slides"];
+        console.log(slides);
         currentSlideIndex = 0;
         document.getElementById("slideId").src = slides[currentSlideIndex];
       });

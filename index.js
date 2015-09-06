@@ -7,11 +7,11 @@ var mongodb = require('mongodb');
 var ObjectID = require('mongodb').ObjectID
 var MongoClient = mongodb.MongoClient;
 
-var url = 'mongodb://localhost:27017/pennappsdb1';
+var url = 'mongodb://localhost:27017/pennappsdb2';
 
 var done=false;
 
-var slides = ["pin1.jpg", "pin2.jpg", "pin3.jpg", "pin4.jpg", "pin5.jpg"];
+var slides = [];
 var numberOfSlides = 1;
 
 var tomongo = [];
@@ -27,12 +27,13 @@ onFileUploadComplete: function (file) {
   console.log(file)
   console.log(file.name + ' uploaded to  ' + file.path)
   tomongo.push({"name": file.name,
-    "title": file.originalname, "posterUrl":file.path})
+    "title": file.originalname, "posterUrl":file.name})
   done=true;
 }
 }));
 
-app.use(express.static('public'));
+app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/uploads'));
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
 });
@@ -145,7 +146,7 @@ app.get('/presentations', function(req, res, next) {
       console.log('Unable to connect to the mongoDB server. Error:', err);
     } else {
       //HURRAY!! We are connected. :)
-      console.log('Connection established to', url);
+      // console.log('Connection established to', url);
 
       // Get the documents collection
       var collection = db.collection('presentations');
@@ -163,22 +164,23 @@ app.get('/presentations', function(req, res, next) {
             presentation["id"] = tmpdata["_id"];
             presentations.push(presentation);
           }
-          console.log('Found:', result);
+          // console.log('Found:', result);
         } else {
           console.log('No document(s) found with defined "find" criteria!');
         }
         //Close connection
         db.close();
+
+        res.json({"results": presentations})
       });
     }
   });
-  res.json({"results": presentations})
 });
 
 app.get('/slides', function(req, res, next) {
   var idInString = req["query"]["pid"];
   var presentationId = parseInt(idInString);
-  var slidesR = []
+
   console.log(slides.length)
 
   MongoClient.connect(url, function (err, db) {
@@ -193,26 +195,31 @@ app.get('/slides', function(req, res, next) {
 
       // Insert some users
       collection.find({_id: new ObjectID(idInString)}).toArray(function (err, result) {
+        var slidesR = []
+
         if (err) {
           console.log(err);
         } else if (result.length) {
-          for (i = 0; i < result.length; i++) {
-            var tmpdata = result[i];
+          console.log('Found:', result);
+          var pages = result[0]["pages"];
+          console.log(pages);
+          for (i = 0; i < pages.length; i++) {
+            var tmpdata = pages[i];
             var slide = {}
             slide["title"] = tmpdata["title"];
             slide["posterUrl"] = tmpdata["posterUrl"];
-            slideR.push(slide);
+            slidesR.push(slide);
           }
-          console.log('Found:', result);
         } else {
           console.log('No document(s) found with defined "find" criteria!');
         }
         //Close connection
         db.close();
+
+        res.json({"results": slidesR})
       });
     }
   });
-  res.json({"results": slidesR})
 });
 
 io.on('connection', function(socket){
@@ -225,7 +232,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('changePresentation', function(data) {
-
+    console.log(data);
     MongoClient.connect(url, function (err, db) {
       if (err) {
         console.log('Unable to connect to the mongoDB server. Error:', err);
@@ -241,22 +248,24 @@ io.on('connection', function(socket){
           if (err) {
             console.log(err);
           } else if (result.length) {
+            var pages = result[0]["pages"];
             slides = [];
-            for (i = 0; i < result.length; i++) {
-              var tmpdata = result[i];
+            console.log(pages);
+            for (i = 0; i < pages.length; i++) {
+              var tmpdata = pages[i];
               slides.push(tmpdata["posterUrl"]);
             }
-            console.log('Found:', result);
+            // console.log('Found:', result);
           } else {
             console.log('No document(s) found with defined "find" criteria!');
           }
           //Close connection
           db.close();
+          io.emit('sendList', {'slides': slides})
         });
       }
     });
 
-    io.emit('sendList', {'slides': slides})
   });
   console.log('a user connected');
 });
