@@ -101,7 +101,7 @@
         document.getElementById("slideId").src = slides[currentSlideIndex];
       });
 
-      socket.on('changeSlide', function(data) {
+      socket.on('changeWelcome', function(data) {
         currentSlideIndex = 0;
         document.getElementById("slideId").src = data["data"];
       });
