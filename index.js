@@ -63,7 +63,8 @@ app.post('/upload', function(req, res) {
             console.log(err);
           } else {
             console.log('Inserted %d documents into the "users" collection. The documents inserted with "_id" are:', result.length, result);
-          }
+            tomongo = []
+	  }
           //Close connection
           db.close();
         });
