@@ -2,13 +2,40 @@ var express = require('express');
 var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var multer  = require('multer');
+
+var done=false;
 
 var slides = ["pin1.jpg", "pin2.jpg", "pin3.jpg", "pin4.jpg", "pin5.jpg"];
 var numberOfSlides = 1;
 
+app.use(multer({ dest: './uploads/',
+ rename: function (fieldname, filename) {
+    return filename+Date.now();
+  },
+onFileUploadStart: function (file) {
+  console.log(file.originalname + ' is starting ...')
+},
+onFileUploadComplete: function (file) {
+  console.log(file.fieldname + ' uploaded to  ' + file.path)
+  done=true;
+}
+}));
+
 app.use(express.static('public'));
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
+});
+
+app.get('/uploadfile', function(req, res){
+  res.sendFile(__dirname + '/uploadfile.html');
+});
+
+app.post('/upload', function(req, res) {
+  if(done==true){
+    console.log(req.files);
+    res.end("File uploaded.");
+  }
 });
 
 app.get('/presentations', function(req, res, next) {
