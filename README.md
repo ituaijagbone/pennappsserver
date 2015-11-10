@@ -6,4 +6,4 @@ It requires:
 - Express.js
 - Mongodb
 
-![alt tag](https://drive.google.com/file/d/0B2p43QM-jriOOFBKc09UOWpuOUE/view?usp=sharing)
+![alt tag](https://github.com/ituaijagbone/Remote/blob/master/assets/remote.png?raw=true)
