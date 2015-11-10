@@ -5,3 +5,5 @@ It requires:
 - Node.js
 - Express.js
 - Mongodb
+
+![alt tag](https://drive.google.com/file/d/0B2p43QM-jriOOFBKc09UOWpuOUE/view?usp=sharing)
